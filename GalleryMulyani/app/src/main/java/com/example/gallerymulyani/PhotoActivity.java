@@ -10,7 +10,8 @@ public class PhotoActivity extends AppCompatActivity {
 
     int integer_position;
     private GridView gridView;
-    GridViewAdapter gridViewAdapter;
+    GridViewAdapter adapter;
+//    String[] arrayPhotos;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -18,10 +19,12 @@ public class PhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         gridView = (GridView) findViewById(R.id.gridViewFolder);
-        integer_position = getIntent().getIntExtra("value", 0);
+//        integer_position = getIntent().getIntExtra("value", 0);
 
-        gridViewAdapter = new GridViewAdapter(this, MainActivity.arrayListImages, integer_position);
-        gridView.setAdapter(gridViewAdapter);
+//        arrayPhotos =getIntent().getStringArrayExtra("Images");
+
+        adapter = new GridViewAdapter(this,MainActivity.arrayListImages, integer_position);
+        gridView.setAdapter(adapter);
 
 
     }

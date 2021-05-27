@@ -1,6 +1,8 @@
 package com.example.gallerymulyani;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +21,9 @@ public class GridViewAdapter extends ArrayAdapter<ImagesModel> {
     Context context;
     ViewHolder viewHolder;
     ArrayList<ImagesModel> arrayListImages = new ArrayList<>();
-    int int_position;
+    int pos;
+
+    ArrayList<String> imagesPath = new ArrayList<>();
 
 
     private static class ViewHolder{
@@ -31,13 +35,13 @@ public class GridViewAdapter extends ArrayAdapter<ImagesModel> {
         super(context, R.layout.adapter_folder, arrayListImages);
         this.context = context;
         this.arrayListImages = arrayListImages;
-        this.int_position = int_position;
+        this.pos = int_position;
     }
 
     @Override
     public int getCount() {
-        Log.e("ADAPTER LIST SIZE", arrayListImages.get(int_position).getArrayList_ImagePath().size() + "");
-        return arrayListImages.get(int_position).getArrayList_ImagePath().size();
+        Log.e("ADAPTER LIST SIZE", arrayListImages.get(pos).getArrayList_ImagePath().size() + "");
+        return arrayListImages.get(pos).getArrayList_ImagePath().size();
     }
 
     @Override
@@ -47,8 +51,8 @@ public class GridViewAdapter extends ArrayAdapter<ImagesModel> {
 
     @Override
     public int getViewTypeCount() {
-        if (arrayListImages.get(int_position).getArrayList_ImagePath().size() > 0){
-            return arrayListImages.get(int_position).getArrayList_ImagePath().size();
+        if (arrayListImages.get(pos).getArrayList_ImagePath().size() > 0){
+            return arrayListImages.get(pos).getArrayList_ImagePath().size();
         }
         else {
             return 1;
@@ -83,5 +87,25 @@ public class GridViewAdapter extends ArrayAdapter<ImagesModel> {
         viewHolder.textViewFolderSize.setVisibility(View.GONE);
 
         return  convertView;
+
+        //second
+//        viewHolder = new ViewHolder();
+//
+//        View childView = LayoutInflater.from(getContext()).inflate(R.layout.adapter_folder, parent, false);
+//        viewHolder.textViewFolderName = (TextView) convertView.findViewById(R.id.textViewFolderName);
+//        viewHolder.textViewFolderSize = (TextView) convertView.findViewById(R.id.textViewFolderSize);
+//        viewHolder.imageViewImages = (ImageView) convertView.findViewById(R.id.imageViewPhoto);
+//
+//        Bitmap bitmap = BitmapFactory.decodeFile(imagesPath.get(position));
+//        Bitmap bitmapThumbnail = Bitmap.createScaledBitmap(bitmap, 300, 300, false);
+//
+//        viewHolder.imageViewImages.setImageBitmap(bitmapThumbnail);
+////        convertView.setTag(viewHolder);
+
+
+//        return childView;
+//
+
+
     }
 }

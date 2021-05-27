@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Intent;
@@ -14,30 +15,49 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     public static ArrayList<ImagesModel> arrayListImages = new ArrayList<>();
-    ArrayList<String> arrayListPath = new ArrayList<>();
 
     boolean booleanFolder;
     FolderAdapter folderAdapter;
     GridView gridViewFolder;
+    private static final int REQUEST_PERMISSIONS = 100;
 
-//    private static final int REQUEST_PERMISSIONS = 100;
+//    //trial and error
+//    public static ArrayList<ImagesModel> pictureFolder = new ArrayList<>();
+//    ArrayList<String> picturePath = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //pop up permissions
+        if (getSupportActionBar() != null) {
+            ActionBar backButton = getSupportActionBar();
+            backButton.setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.title);
+        }
+
+        //second
+        gridViewFolder = (GridView) findViewById(R.id.gridViewFolder);
+        gridViewFolder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
+                Intent intent = new Intent(getApplicationContext(), PhotoActivity.class);
+                intent.putExtra("value", i);
+                startActivity(intent);
+            }
+        });
+
         if ((ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
@@ -47,29 +67,60 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
                 ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUEST_PERMISSIONS);
             }
         }
+//        else {
+//            Log.e("Else","Else");
+//            folderName_ImagePath();
+//        }
+        folderName_ImagePath();
 
-        if (getSupportActionBar() != null) {
-            ActionBar backButton = getSupportActionBar();
-            backButton.setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.title);
-        }
+        //trial and error
 
-        gridViewFolder = (GridView) findViewById(R.id.gridViewFolder);
-        gridViewFolder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), PhotoActivity.class);
-                intent.putExtra("value", position);
-                startActivity(intent);
-            }
-        });
+        //pop up permissions
+//        if ((ContextCompat.checkSelfPermission(getApplicationContext(),
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(getApplicationContext(),
+//                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+//            if ((ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+//                    Manifest.permission.READ_EXTERNAL_STORAGE))) {
+//
+//            } else {
+//                ActivityCompat.requestPermissions(MainActivity.this,
+//                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+//            }
+//        }
+
+//        RecyclerView recyclerView =findViewById(R.id.recyclerFolder);
+//        recyclerView.hasFixedSize();
+//        ArrayList<ImagesModel> folds = getPicturePath();
+////        FolderAdapter folderAdapter = new FolderAdapter(MainActivity.this, folds);
+//
+//        if (folds.isEmpty()){
+//            Toast.makeText(MainActivity.this, "There is no Album here",Toast.LENGTH_LONG).show();
+//        }
+//        else{
+//            RecyclerView.Adapter folderAdapter = new FolderAdapter(MainActivity.this, folds);
+//            recyclerView.setAdapter(folderAdapter);
+//        }
+
+        //original
+//        ArrayList<ImagesModel> folds = folderName_ImagePath();
+//        FolderAdapter folderAdapter = new FolderAdapter(MainActivity.this, folds);
+
+//        if (folds.isEmpty()){
+//            Toast.makeText(MainActivity.this, "There is no Album here",Toast.LENGTH_LONG).show();
+//        }
+//        else{
+//            gridViewFolder.setAdapter(folderAdapter);
+//        }
 
     }
 
-    public ArrayList<ImagesModel> FolderName_ImagePath(){
+    //original
+    public ArrayList<ImagesModel> folderName_ImagePath(){
         arrayListImages.clear();
 
         int int_position = 0;
@@ -106,11 +157,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (booleanFolder){
-                arrayListPath.addAll(arrayListImages.get(int_position).getArrayList_ImagePath());
+                ArrayList<String> arrayListPath = new ArrayList<>(arrayListImages.get(int_position).getArrayList_ImagePath());
                 arrayListPath.add(absolutePathOfImage);
                 arrayListImages.get(int_position).setArrayList_ImagePath(arrayListPath);
             }
             else {
+                ArrayList<String> arrayListPath = new ArrayList<>();
                 arrayListPath.add(absolutePathOfImage);
                 ImagesModel imagesModel = new ImagesModel();
 
@@ -130,11 +182,27 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        folderAdapter = new FolderAdapter(getApplicationContext(), arrayListImages);
-
+        FolderAdapter folderAdapter = new FolderAdapter(getApplicationContext(), arrayListImages);
         gridViewFolder.setAdapter(folderAdapter);
-
         return arrayListImages;
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case REQUEST_PERMISSIONS: {
+                for (int i = 0; i < grantResults.length; i++) {
+                    if (grantResults.length > 0 && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        folderName_ImagePath();
+                    } else {
+                        Toast.makeText(MainActivity.this, "The app was not allowed to read or write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -142,4 +210,63 @@ public class MainActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
+    //trial and error
+//    ArrayList<ImagesModel> getPicturePath(){
+//
+//
+//        Uri allImagesUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+//        String[] projection = {MediaStore.Images.ImageColumns.DATA, MediaStore.Images.Media.DISPLAY_NAME,
+//                MediaStore.Images.Media.BUCKET_DISPLAY_NAME, MediaStore.Images.Media.BUCKET_ID};
+//
+//        Cursor cursor = this.getContentResolver().query(allImagesUri, projection, null, null, null);
+//
+//
+//        try{
+//            if (cursor != null){
+//                cursor.moveToFirst();
+//            }
+//            do {
+//                ImagesModel folder = new ImagesModel();
+//                String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
+//                String folders = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
+//                String dataPath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
+//
+//
+//                String folderPaths = dataPath.substring(0, dataPath.lastIndexOf(folders + "/"));
+//                folderPaths = folderPaths+folders+"/";
+//
+//                if (!picturePath.contains(folderPaths)){
+//                    picturePath.add(folderPaths);
+//
+//                    folder.setPath(folderPaths);
+//                    folder.setFolderName(folders);
+//                    folder.setFirstPic(dataPath);
+//                    folder.addPics();
+//                    pictureFolder.add(folder);
+//                }
+//                else{
+//                    for (int i = 0; i < pictureFolder.size(); i++){
+//                        if(pictureFolder.get(i).getPath().equals(folderPaths)){
+//                            pictureFolder.get(i).setFirstPic(dataPath);
+//                            pictureFolder.get(i).addPics();
+//                        }
+//                    }
+//                }
+//            }
+//            while (cursor.moveToNext());
+//            cursor.close();
+//        }
+//        catch (Exception e){
+//            e.printStackTrace();
+//        }
+//
+//        for (int i = 0; i<pictureFolder.size(); i++){
+//            Log.d("Picture Folder", pictureFolder.get(i).getFolderName()+ " and path = "+pictureFolder.get(i).getPath()+" "+pictureFolder.get(i).getNumberOfPics());
+//
+//        }
+//
+//        return pictureFolder;
+//    }
 }
+
