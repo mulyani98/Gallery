@@ -3,22 +3,20 @@ package com.example.gallerymulyani;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.text.Layout;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import androidx.cardview.widget.CardView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.recyclerview.widget.RecyclerView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.math.BigInteger;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 
     public class FolderAdapter extends ArrayAdapter<ImagesModel>{
@@ -91,14 +89,22 @@ import java.util.ArrayList;
 
             convertView.setTag(viewHolder);
 
+            Bitmap bitmap = BitmapFactory.decodeFile(arrayListImages.get(position).getFirstPic());
+            Bitmap bitmapThumbnail = Bitmap.createScaledBitmap(bitmap, 300, 300, false);
+            viewHolder.imageViewPhoto.setImageBitmap(bitmapThumbnail);
+
         }
         else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
 
-        viewHolder.textView_FolderName.setText(arrayListImages.get(position).getStringFolder());
-        viewHolder.textView_FolderSize.setText(arrayListImages.get(position).getArrayList_ImagePath().size() + "");
+//        Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(arrayListImages.get(position).getFirstPic()));
+//        Bitmap bitmapThumbnail = Bitmap.createScaledBitmap(bitmap, 300, 300, false);
+
+        viewHolder.textView_FolderName.setText(arrayListImages.get(position).getFolderName());
+//        viewHolder.textView_FolderSize.setText(arrayListImages.get(position).getArrayList_ImagePath().size() + "");
+        viewHolder.textView_FolderSize.setText(arrayListImages.get(position).getStringImagePath());
 
         return convertView;
 

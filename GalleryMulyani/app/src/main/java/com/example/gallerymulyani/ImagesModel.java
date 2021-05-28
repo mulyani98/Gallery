@@ -4,27 +4,57 @@ import java.util.ArrayList;
 
 public class ImagesModel {
 
-    String stringFolder;
-    ArrayList<String> arrayList_ImagePath;
-    String stringPath;
+    private String folderName;
+//    ArrayList<String> arrayList_ImagePath;
+    String stringImagePath;
+    private String firstPic;
+    private int numberOfPics = 0;
 
-    public String getStringFolder() {
-        return stringFolder;
+    public String getFolderName() {
+        return folderName;
     }
 
-    public void setStringFolder(String stringFolder) {
-        this.stringFolder = stringFolder;
+    public void setFolderName(String stringFolder) {
+        this.folderName = stringFolder;
     }
 
-    public ArrayList<String> getArrayList_ImagePath() {
-        return arrayList_ImagePath;
+//    public ArrayList<String> getArrayList_ImagePath() {
+//        return arrayList_ImagePath;
+//    }
+//
+//    public void setArrayList_ImagePath(ArrayList<String> arrayList_ImagePath) {
+//        this.arrayList_ImagePath = arrayList_ImagePath;
+//    }
+
+    public void setFirstPic(String firstPic) {
+        this.firstPic = firstPic;
     }
 
-    public void setArrayList_ImagePath(ArrayList<String> arrayList_ImagePath) {
-        this.arrayList_ImagePath = arrayList_ImagePath;
+    public String getFirstPic() {
+        return firstPic;
     }
 
-//    private String path;
+    public int getNumberOfPics() {
+        return numberOfPics;
+    }
+
+    public void setNumberOfPics(int numberOfPics) {
+        this.numberOfPics = numberOfPics;
+    }
+
+    public String getStringImagePath() {
+        return stringImagePath;
+    }
+
+    public void setStringImagePath(String stringImagePath) {
+        this.stringImagePath = stringImagePath;
+    }
+
+    public void addPics(){
+        this.numberOfPics++;
+    }
+
+    //    private String path;
 //    private String folderName;
 //    private int numberOfPics = 0;
 //    private String firstPic;

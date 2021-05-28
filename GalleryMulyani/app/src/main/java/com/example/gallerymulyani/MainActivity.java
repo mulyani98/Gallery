@@ -1,11 +1,9 @@
 package com.example.gallerymulyani;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Intent;
@@ -51,9 +49,14 @@ public class MainActivity extends AppCompatActivity {
         gridViewFolder = (GridView) findViewById(R.id.gridViewFolder);
         gridViewFolder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+//                Intent move = new Intent(getApplicationContext(), PhotoActivity.class);
+//                move.putExtra("value", i);
+//                startActivity(move);
+
                 Intent intent = new Intent(getApplicationContext(), PhotoActivity.class);
-                intent.putExtra("value", i);
+//                intent.putExtra("folderName",folderName_ImagePath());
+                intent.putExtra("value",position);
                 startActivity(intent);
             }
         });
@@ -71,14 +74,13 @@ public class MainActivity extends AppCompatActivity {
                         REQUEST_PERMISSIONS);
             }
         }
-//        else {
-//            Log.e("Else","Else");
-//            folderName_ImagePath();
-//        }
-        folderName_ImagePath();
+        else {
+            Log.e("Else","Else");
+            folderName_ImagePath();
+        }
+
 
         //trial and error
-
         //pop up permissions
 //        if ((ContextCompat.checkSelfPermission(getApplicationContext(),
 //                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(getApplicationContext(),
@@ -123,64 +125,117 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<ImagesModel> folderName_ImagePath(){
         arrayListImages.clear();
 
-        int int_position = 0;
-        Uri uri;
-        Cursor cursor;
+//        int int_position = 0;
+//        Uri uri;
+//        Cursor cursor;
+//
+//        int column_index_data, column_index_folder_name;
+//
+//        String absolutePathOfImage = null;
+//
+//        uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+//
+//        String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
+//
+//        cursor = getApplicationContext().getContentResolver().query(uri, projection, null, null, null);
+//
+//        column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+//        column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
 
-        int column_index_data, column_index_folder_name;
+//        while (cursor.moveToNext()){
+//            absolutePathOfImage = cursor.getString(column_index_data);
+//            Log.e("Column", absolutePathOfImage);
+//            Log.e("Folder", cursor.getString(column_index_folder_name));
+//
+//            for (int i = 0; i < arrayListImages.size(); i++){
+//                if (arrayListImages.get(i).getFolderName().equals(cursor.getString(column_index_folder_name))){
+//                    booleanFolder = true;
+//                    int_position = i;
+//                    break;
+//                }
+//                else {
+//                    booleanFolder = false;
+//                }
+//            }
+//
+//            if (booleanFolder){
+//                ArrayList<String> arrayListPath = new ArrayList<>(arrayListImages.get(int_position).getArrayList_ImagePath());
+//                arrayListPath.add(absolutePathOfImage);
+//                arrayListImages.get(int_position).setArrayList_ImagePath(arrayListPath);
+//                arrayListImages.get(int_position).setFirstPic(arrayListPath);
+//            }
+//            else {
+//                ArrayList<String> arrayListPath = new ArrayList<>();
+//                arrayListPath.add(absolutePathOfImage);
+//                ImagesModel imagesModel = new ImagesModel();
+//
+//                imagesModel.setFolderName(cursor.getString(column_index_folder_name));
+//                imagesModel.setArrayList_ImagePath(arrayListPath);
+//                imagesModel.setFirstPic(arrayListPath);
+//
+//                arrayListImages.add(imagesModel);
+//            }
+//
+//        }
+//
+//        for (int i = 0; i < arrayListImages.size(); i++){
+//            Log.e("FOLDER", arrayListImages.get(i).getFolderName());
+//
+//            for(int j = 0; j < arrayListImages.get(i).getArrayList_ImagePath().size(); j++){
+//                Log.e("FILE", arrayListImages.get(i).getArrayList_ImagePath().get(j));
+//            }
+//        }
 
-        String absolutePathOfImage = null;
+        ArrayList<ImagesModel> pictureFolder = new ArrayList<>();
+        ArrayList<String> albumPath = new ArrayList<>();
 
-        uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        Uri allImagesuri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        String[] projection = { MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.Media.DISPLAY_NAME,
+                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.Media.BUCKET_ID};
+        Cursor cursor = this.getContentResolver().query(allImagesuri, projection, null, null, null);
 
-        String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
+        try{
+            if (cursor != null){
+                cursor.moveToFirst();
+            }
+            do{
+                ImagesModel folds = new ImagesModel();
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
+                String folder = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
+                String datapath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
 
-        cursor = getApplicationContext().getContentResolver().query(uri, projection, null, null, null);
+                String folderPath = datapath.substring(0, datapath.lastIndexOf(folder+ "/"));
+                folderPath = folderPath +folder+"/";
 
-        column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
+                if (!albumPath.contains(folderPath)){
+                    albumPath.add(folderPath);
 
-        while (cursor.moveToNext()){
-            absolutePathOfImage = cursor.getString(column_index_data);
-            Log.e("Column", absolutePathOfImage);
-            Log.e("Folder", cursor.getString(column_index_folder_name));
-
-            for (int i = 0; i < arrayListImages.size(); i++){
-                if (arrayListImages.get(i).getStringFolder().equals(cursor.getString(column_index_folder_name))){
-                    booleanFolder = true;
-                    int_position = i;
-                    break;
+                    folds.setStringImagePath(folderPath);
+                    folds.setFolderName(folder);
+                    folds.setFirstPic(datapath);
+                    folds.addPics();
+                    arrayListImages.add(folds);
                 }
+
                 else {
-                    booleanFolder = false;
+                    for (int i =0; i<arrayListImages.size(); i++){
+                        if (arrayListImages.get(i).getStringImagePath().equals(folderPath)){
+                            arrayListImages.get(i).setFirstPic(datapath);
+                            arrayListImages.get(i).addPics();
+                        }
+                    }
                 }
-            }
-
-            if (booleanFolder){
-                ArrayList<String> arrayListPath = new ArrayList<>(arrayListImages.get(int_position).getArrayList_ImagePath());
-                arrayListPath.add(absolutePathOfImage);
-                arrayListImages.get(int_position).setArrayList_ImagePath(arrayListPath);
-            }
-            else {
-                ArrayList<String> arrayListPath = new ArrayList<>();
-                arrayListPath.add(absolutePathOfImage);
-                ImagesModel imagesModel = new ImagesModel();
-
-                imagesModel.setStringFolder(cursor.getString(column_index_folder_name));
-                imagesModel.setArrayList_ImagePath(arrayListPath);
-
-                arrayListImages.add(imagesModel);
-            }
-
+            }while (cursor.moveToNext());
+            cursor.close();
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
-        for (int i = 0; i < arrayListImages.size(); i++){
-            Log.e("FOLDER", arrayListImages.get(i).getStringFolder());
-
-            for(int j = 0; j < arrayListImages.get(i).getArrayList_ImagePath().size(); j++){
-                Log.e("FILE", arrayListImages.get(i).getArrayList_ImagePath().get(j));
-            }
-        }
+//        for (int i=0; i < arrayListImages.size(); i++){
+//            Log.d("Picture Folders ", arrayListImages.get(i).getFolderName()+ " and path = " +pictureFolder.get(i).getStringImagePath()+" "+pictureFolder.get(i).getNumberOfPics());
+//        }
 
         FolderAdapter folderAdapter = new FolderAdapter(getApplicationContext(), arrayListImages);
         gridViewFolder.setAdapter(folderAdapter);
@@ -198,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
                     if (grantResults.length > 0 && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                         folderName_ImagePath();
                     } else {
-                        Toast.makeText(MainActivity.this, "The app was not allowed to read or write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "The app was not allowed to read or write your storage", Toast.LENGTH_LONG).show();
                     }
                 }
             }

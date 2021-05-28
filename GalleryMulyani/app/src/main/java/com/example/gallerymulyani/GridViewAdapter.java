@@ -3,6 +3,7 @@ package com.example.gallerymulyani;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class GridViewAdapter extends ArrayAdapter<ImagesModel> {
@@ -38,26 +41,26 @@ public class GridViewAdapter extends ArrayAdapter<ImagesModel> {
         this.pos = int_position;
     }
 
-    @Override
-    public int getCount() {
-        Log.e("ADAPTER LIST SIZE", arrayListImages.get(pos).getArrayList_ImagePath().size() + "");
-        return arrayListImages.get(pos).getArrayList_ImagePath().size();
-    }
+//    @Override
+//    public int getCount() {
+//        Log.e("ADAPTER LIST SIZE", arrayListImages.get(pos).getArrayList_ImagePath().size() + "");
+//        return arrayListImages.get(pos).getArrayList_ImagePath().size();
+//    }
 
     @Override
     public int getItemViewType(int position) {
         return position;
     }
 
-    @Override
-    public int getViewTypeCount() {
-        if (arrayListImages.get(pos).getArrayList_ImagePath().size() > 0){
-            return arrayListImages.get(pos).getArrayList_ImagePath().size();
-        }
-        else {
-            return 1;
-        }
-    }
+//    @Override
+//    public int getViewTypeCount() {
+//        if (arrayListImages.get(pos).getArrayList_ImagePath().size() > 0){
+//            return arrayListImages.get(pos).getArrayList_ImagePath().size();
+//        }
+//        else {
+//            return 1;
+//        }
+//    }
 
     @Override
     public long getItemId(int position) {
@@ -68,6 +71,19 @@ public class GridViewAdapter extends ArrayAdapter<ImagesModel> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
+//        View view;
+//        view = LayoutInflater.from(getContext()).inflate(R.layout.adapter_folder, parent, false);
+//
+//        TextView textViewFolderName = (TextView) convertView.findViewById(R.id.textViewFolderName);
+//        TextView textViewFolderSize = (TextView) convertView.findViewById(R.id.textViewFolderSize);
+//        ImageView imageViewImages = (ImageView) convertView.findViewById(R.id.imageViewPhoto);
+//
+//        textViewFolderName.setVisibility(View.INVISIBLE);
+//        textViewFolderSize.setVisibility(View.INVISIBLE);
+//        imageViewImages.setImageBitmap();
+//
+//        convertView.setTag(viewHolder);
+
         if (convertView == null){
             viewHolder = new ViewHolder();
 
@@ -77,14 +93,23 @@ public class GridViewAdapter extends ArrayAdapter<ImagesModel> {
             viewHolder.textViewFolderSize = (TextView) convertView.findViewById(R.id.textViewFolderSize);
             viewHolder.imageViewImages = (ImageView) convertView.findViewById(R.id.imageViewPhoto);
 
+            Bitmap bitmap = BitmapFactory.decodeFile(arrayListImages.get(position).getFirstPic());
+            Bitmap bitmapThumbnail = Bitmap.createScaledBitmap(bitmap, 300, 300, false);
+            viewHolder.imageViewImages.setImageBitmap(bitmapThumbnail);
+
+//            byte[] decodedString = Base64.decode(String.valueOf(arrayListImages), Base64.NO_WRAP);
+//            InputStream input=new ByteArrayInputStream(decodedString);
+//            Bitmap ext_pic = BitmapFactory.decodeStream(input);
+//            viewHolder.imageViewImages.setImageBitmap(ext_pic);
+
             convertView.setTag(viewHolder);
         }
         else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.textViewFolderName.setVisibility(View.GONE);
-        viewHolder.textViewFolderSize.setVisibility(View.GONE);
+        viewHolder.textViewFolderName.setVisibility(View.INVISIBLE);
+        viewHolder.textViewFolderSize.setVisibility(View.INVISIBLE);
 
         return  convertView;
 
