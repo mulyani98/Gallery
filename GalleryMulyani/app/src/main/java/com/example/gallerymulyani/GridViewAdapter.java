@@ -3,8 +3,6 @@ package com.example.gallerymulyani;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class GridViewAdapter extends ArrayAdapter<ImagesModel> {
@@ -34,11 +30,11 @@ public class GridViewAdapter extends ArrayAdapter<ImagesModel> {
         ImageView imageViewImages;
     }
 
-    public GridViewAdapter(Context context, ArrayList<ImagesModel> arrayListImages, int int_position){
+    public GridViewAdapter(Context context, ArrayList<ImagesModel> arrayListImages){
         super(context, R.layout.adapter_folder, arrayListImages);
         this.context = context;
         this.arrayListImages = arrayListImages;
-        this.pos = int_position;
+//        this.pos = int_position;
     }
 
 //    @Override
@@ -96,11 +92,6 @@ public class GridViewAdapter extends ArrayAdapter<ImagesModel> {
             Bitmap bitmap = BitmapFactory.decodeFile(arrayListImages.get(position).getFirstPic());
             Bitmap bitmapThumbnail = Bitmap.createScaledBitmap(bitmap, 300, 300, false);
             viewHolder.imageViewImages.setImageBitmap(bitmapThumbnail);
-
-//            byte[] decodedString = Base64.decode(String.valueOf(arrayListImages), Base64.NO_WRAP);
-//            InputStream input=new ByteArrayInputStream(decodedString);
-//            Bitmap ext_pic = BitmapFactory.decodeStream(input);
-//            viewHolder.imageViewImages.setImageBitmap(ext_pic);
 
             convertView.setTag(viewHolder);
         }

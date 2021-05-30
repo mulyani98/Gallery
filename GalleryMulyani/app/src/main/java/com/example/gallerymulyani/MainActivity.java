@@ -27,11 +27,15 @@ public class MainActivity extends AppCompatActivity {
     boolean booleanFolder;
     FolderAdapter folderAdapter;
     GridView gridViewFolder;
-    private static final int REQUEST_PERMISSIONS = 100;
+//    private static final int REQUEST_PERMISSIONS = 100;
+    private static final int REQUEST_PERMISSIONS = 1;
 
 //    //trial and error
 //    public static ArrayList<ImagesModel> pictureFolder = new ArrayList<>();
 //    ArrayList<String> picturePath = new ArrayList<>();
+
+    //tried at home
+//    PictureFolderAdapter pictureFolderAdapter;
 
 
     @Override
@@ -50,34 +54,44 @@ public class MainActivity extends AppCompatActivity {
         gridViewFolder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-//                Intent move = new Intent(getApplicationContext(), PhotoActivity.class);
-//                move.putExtra("value", i);
-//                startActivity(move);
+                Intent move = new Intent(getApplicationContext(), PhotoActivity.class);
+                move.putExtra("value", position);
+                startActivity(move);
 
-                Intent intent = new Intent(getApplicationContext(), PhotoActivity.class);
-//                intent.putExtra("folderName",folderName_ImagePath());
-                intent.putExtra("value",position);
-                startActivity(intent);
+                //original
+//                Intent intent = new Intent(getApplicationContext(), PhotoActivity.class);
+////                intent.putExtra("folderName",folderName_ImagePath());
+//                intent.putExtra("value",position);
+//                startActivity(intent);
+
+                //tried at home
+//                Intent move = new Intent(MainActivity.this,PhotoActivity.class);
+////                move.putExtra("albumPath",arrayListImages);
+//                move.putExtra("albumPath",folderName_ImagePath());
+//
+//                //move.putExtra("recyclerItemSize",getCardsOptimalWidth(4));
+//                startActivity(move);
             }
         });
 
-        if ((ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
-            if ((ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE))) {
-
-            } else {
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-                        REQUEST_PERMISSIONS);
-            }
-        }
-        else {
-            Log.e("Else","Else");
-            folderName_ImagePath();
-        }
+        //original
+//        if ((ContextCompat.checkSelfPermission(getApplicationContext(),
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(getApplicationContext(),
+//                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+//            if ((ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) && (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+//                    Manifest.permission.READ_EXTERNAL_STORAGE))) {
+//
+//            } else {
+//                ActivityCompat.requestPermissions(MainActivity.this,
+//                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+//                        REQUEST_PERMISSIONS);
+//            }
+//        }
+//        else {
+//            Log.e("Else","Else");
+//            folderName_ImagePath();
+//        }
 
 
         //trial and error
@@ -118,6 +132,25 @@ public class MainActivity extends AppCompatActivity {
 //        else{
 //            gridViewFolder.setAdapter(folderAdapter);
 //        }
+
+        //tried at home
+        if(ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_PERMISSIONS);
+
+        ArrayList<ImagesModel> folds = folderName_ImagePath();
+
+        if (folds.isEmpty()){
+            Toast.makeText(this, "There is no Album here", Toast.LENGTH_LONG).show();
+        }
+        else{
+            FolderAdapter folderAdapter = new FolderAdapter(MainActivity.this, folds);
+            gridViewFolder.setAdapter(folderAdapter);
+        }
+
 
     }
 
@@ -186,6 +219,63 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }
 
+        //original
+//        ArrayList<ImagesModel> pictureFolder = new ArrayList<>();
+//        ArrayList<String> albumPath = new ArrayList<>();
+//
+//        Uri allImagesuri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+//        String[] projection = { MediaStore.Images.ImageColumns.DATA,
+//                MediaStore.Images.Media.DISPLAY_NAME,
+//                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+//                MediaStore.Images.Media.BUCKET_ID};
+//        Cursor cursor = this.getContentResolver().query(allImagesuri, projection, null, null, null);
+//
+//        try{
+//            if (cursor != null){
+//                cursor.moveToFirst();
+//            }
+//            do{
+//                ImagesModel folds = new ImagesModel();
+//                String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
+//                String folder = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
+//                String datapath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
+//
+//                String folderPath = datapath.substring(0, datapath.lastIndexOf(folder+ "/"));
+//                folderPath = folderPath +folder+"/";
+//
+//                if (!albumPath.contains(folderPath)){
+//                    albumPath.add(folderPath);
+//
+//                    folds.setStringImagePath(folderPath);
+//                    folds.setFolderName(folder);
+//                    folds.setFirstPic(datapath);
+//                    folds.addPics();
+//                    arrayListImages.add(folds);
+//                }
+//
+//                else {
+//                    for (int i =0; i<arrayListImages.size(); i++){
+//                        if (arrayListImages.get(i).getStringImagePath().equals(folderPath)){
+//                            arrayListImages.get(i).setFirstPic(datapath);
+//                            arrayListImages.get(i).addPics();
+//                        }
+//                    }
+//                }
+//            }while (cursor.moveToNext());
+//            cursor.close();
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+
+//        for (int i=0; i < arrayListImages.size(); i++){
+//            Log.d("Picture Folders ", arrayListImages.get(i).getFolderName()+ " and path = " +pictureFolder.get(i).getStringImagePath()+" "+pictureFolder.get(i).getNumberOfPics());
+//        }
+
+//        FolderAdapter folderAdapter = new FolderAdapter(getApplicationContext(), arrayListImages);
+//        gridViewFolder.setAdapter(folderAdapter);
+//        return arrayListImages;
+
+//        tried at home
         ArrayList<ImagesModel> pictureFolder = new ArrayList<>();
         ArrayList<String> albumPath = new ArrayList<>();
 
@@ -216,14 +306,14 @@ public class MainActivity extends AppCompatActivity {
                     folds.setFolderName(folder);
                     folds.setFirstPic(datapath);
                     folds.addPics();
-                    arrayListImages.add(folds);
+                    pictureFolder.add(folds);
                 }
 
                 else {
-                    for (int i =0; i<arrayListImages.size(); i++){
-                        if (arrayListImages.get(i).getStringImagePath().equals(folderPath)){
-                            arrayListImages.get(i).setFirstPic(datapath);
-                            arrayListImages.get(i).addPics();
+                    for (int i =0; i<pictureFolder.size(); i++){
+                        if (pictureFolder.get(i).getStringImagePath().equals(folderPath)){
+                            pictureFolder.get(i).setFirstPic(datapath);
+                            pictureFolder.get(i).addPics();
                         }
                     }
                 }
@@ -233,13 +323,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-//        for (int i=0; i < arrayListImages.size(); i++){
-//            Log.d("Picture Folders ", arrayListImages.get(i).getFolderName()+ " and path = " +pictureFolder.get(i).getStringImagePath()+" "+pictureFolder.get(i).getNumberOfPics());
-//        }
+        for (int i=0; i < pictureFolder.size(); i++){
+            Log.d("Picture Folders ", pictureFolder.get(i).getFolderName()+ " and path = " +pictureFolder.get(i).getStringImagePath()+" "+pictureFolder.get(i).getNumberOfPics());
+        }
 
-        FolderAdapter folderAdapter = new FolderAdapter(getApplicationContext(), arrayListImages);
-        gridViewFolder.setAdapter(folderAdapter);
-        return arrayListImages;
+        return pictureFolder;
 
     }
 
@@ -264,6 +352,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    //tried at home
+    public void onPicClicked(String pictureFolderPath,String folderName) {
+        Intent move = new Intent(MainActivity.this,PhotoActivity.class);
+        move.putExtra("folderPath",pictureFolderPath);
+        move.putExtra("folderName",folderName);
+
+        //move.putExtra("recyclerItemSize",getCardsOptimalWidth(4));
+        startActivity(move);
     }
 
     //trial and error

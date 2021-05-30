@@ -3,7 +3,6 @@ package com.example.gallerymulyani;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +14,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 
     public class FolderAdapter extends ArrayAdapter<ImagesModel>{
@@ -24,7 +21,7 @@ import java.util.ArrayList;
     //original
     Context context;
     ViewHolder viewHolder;
-    ArrayList<ImagesModel> arrayListImages = new ArrayList<ImagesModel>();
+    ArrayList<ImagesModel> arrayListImages = new ArrayList<>();
     ArrayList<String> imagesPath = new ArrayList<>();
 
 //    //trial and error
@@ -98,13 +95,9 @@ import java.util.ArrayList;
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-
-//        Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(arrayListImages.get(position).getFirstPic()));
-//        Bitmap bitmapThumbnail = Bitmap.createScaledBitmap(bitmap, 300, 300, false);
-
         viewHolder.textView_FolderName.setText(arrayListImages.get(position).getFolderName());
-//        viewHolder.textView_FolderSize.setText(arrayListImages.get(position).getArrayList_ImagePath().size() + "");
-        viewHolder.textView_FolderSize.setText(arrayListImages.get(position).getStringImagePath());
+        viewHolder.textView_FolderSize.setText(arrayListImages.get(position).getNumberOfPics() + "");
+//        viewHolder.textView_FolderSize.setText(arrayListImages.get(position).getStringImagePath());
 
         return convertView;
 
@@ -172,4 +165,7 @@ import java.util.ArrayList;
 //    public int getItemCount(){
 //        return folders.size();
 //    }
+
+        //tried at home
+
 }

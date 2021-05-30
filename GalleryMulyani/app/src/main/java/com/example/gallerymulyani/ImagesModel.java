@@ -6,7 +6,7 @@ public class ImagesModel {
 
     private String folderName;
 //    ArrayList<String> arrayList_ImagePath;
-    String stringImagePath;
+    private String stringImagePath;
     private String firstPic;
     private int numberOfPics = 0;
 
@@ -94,16 +94,4 @@ public class ImagesModel {
 //        this.numberOfPics = numberOfPics;
 //    }
 //
-//    public String getFirstPic() {
-//        return firstPic;
-//    }
-//
-//    public void setFirstPic(String firstPic) {
-//        this.firstPic = firstPic;
-//    }
-//
-//    // addpics
-//    public void addPics(){
-//        this.numberOfPics++;
-//    }
 }
